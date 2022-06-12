@@ -1,12 +1,21 @@
+import { useState } from "react";
 import { Form, Navbar, ProjectCard } from "./components";
 
 function App() {
+  const [details, setDetails] = useState({
+    title: "",
+    category: "",
+    description: "",
+    image: "",
+    github: "",
+  });
+
   return (
     <>
       <Navbar />
       <div className="flex justify-evenly items-center min-h-screen">
-      <Form />
-      <ProjectCard />
+        <Form setDetails={setDetails} details={details}/>
+        <ProjectCard details={details}/>
       </div>
     </>
   );
