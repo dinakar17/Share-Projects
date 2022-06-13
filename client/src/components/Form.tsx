@@ -1,5 +1,13 @@
 import React, { Dispatch, SetStateAction } from "react";
-import FileBase from 'react-file-base64'
+import FileBase from "react-file-base64";
+import { useDispatch } from "react-redux";
+import { useNavigate } from "react-router-dom";
+// getPosts is async action creator
+import {
+  createPost,
+  updatePost,
+} from "../reduxStore/StatesContainer/posts/postsSlice";
+import { AppDispatch } from "../reduxStore/store";
 
 type FormProps = {
   details: {
@@ -21,55 +29,92 @@ type FormProps = {
       github: string;
     }>
   >;
+
+  shouldUpdate?: Number;
+  id?: String;
 };
 
+const Form = ({ details, setDetails, shouldUpdate, id }: FormProps) => {
+  const dispatch = useDispatch<AppDispatch>();
+  const navigate = useNavigate();
 
-const Form = ({details, setDetails }: FormProps) => {
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement> ) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    // console.log(details);
+    if (shouldUpdate === 1) {
+      let dataTobeUpdated = { id: id, details: details };
+      dispatch(updatePost(dataTobeUpdated));
+    } else {
+      dispatch(createPost(details));
+
+      navigate("/");
+    }
+    setDetails({
+      title: "",
+      category: "",
+      description: "",
+      image: "",
+      github: "",
+    });
   };
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement> | React.ChangeEvent<HTMLTextAreaElement> ) => {
-    console.log(e);
+  const handleChange = (
+    e:
+      | React.ChangeEvent<HTMLInputElement>
+      | React.ChangeEvent<HTMLTextAreaElement>
+  ) => {
     setDetails((prevState) => ({
       ...prevState,
       [e.target.name]: e.target.value,
-    }))
-  }
-  
+    }));
+  };
+
   return (
-    <form
-      className="flex flex-col shadow-md rounded-md p-5 gap-10 w-80"
-      onSubmit={handleSubmit}
-    >
-      <input
-        name="title"
-        placeholder="Project title"
-        className="border-b-2 focus:outline-none"
-        onChange={handleChange}
-      />
-      <input
-        name="category"
-        placeholder="Category"
-        className="border-b-2 focus:outline-none"
-        onChange={handleChange}
-      />
-      <textarea
-        name="description"
-        rows={5}
-        placeholder="Description"
-        className="border-b-2 focus:outline-none"
-        onChange={handleChange}
-      />
-      <FileBase name="image" type="file" onDone={({ base64 }: any) => setDetails({ ...details, image: base64 })}/>
-      <input
-        name="github"
-        placeholder="Github link"
-        className="border-b-2 focus:outline-none"
-        onChange={handleChange}
-      />
-      <button className="bg-orange-400 p-2 ">Post</button>
-    </form>
+    <>
+      <form
+        className="flex flex-col shadow-md rounded-md p-5 gap-10 w-80"
+        onSubmit={handleSubmit}
+      >
+        <input
+          name="title"
+          placeholder="Project title"
+          className="border-b-2 focus:outline-none"
+          value={details.title}
+          onChange={handleChange}
+        />
+        <input
+          name="category"
+          placeholder="Category"
+          value={details.category}
+          className="border-b-2 focus:outline-none"
+          onChange={handleChange}
+        />
+        <textarea
+          name="description"
+          rows={5}
+          placeholder="Description"
+          value={details.description}
+          className="border-b-2 focus:outline-none"
+          onChange={handleChange}
+        />
+        <FileBase
+          name="image"
+          type="file"
+          multiple={false}
+          onDone={({ base64 }: any) =>
+            setDetails({ ...details, image: base64 })
+          }
+        />
+        <input
+          name="github"
+          value={details.github}
+          placeholder="Github link"
+          className="border-b-2 focus:outline-none"
+          onChange={handleChange}
+        />
+        <button className="bg-orange-400 p-2 ">Post</button>
+      </form>
+    </>
   );
 };
 

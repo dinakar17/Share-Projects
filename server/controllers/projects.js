@@ -9,6 +9,7 @@ export const getProjects = async (req, res) => {
   try {
     const projectMessages = await ProjectModel.find();
     res.status(200).json(projectMessages);
+    // console.log(projectMessages);
   } catch (error) {
     res.status(404).json({ message: error.message });
   }
@@ -26,12 +27,14 @@ export const getProject = async (req, res) => {
 
 export const createProject = async (req, res) => {
   const { title, category, description, github, image } = req.body;
+
+  // Create a new document named 'newProjectMessage'
   const newProjectMessage = new ProjectModel({
     title,
     category,
     description,
-    github,
     image,
+    github,
   });
   try {
     await newProjectMessage.save();
@@ -44,6 +47,7 @@ export const createProject = async (req, res) => {
 export const updatedProject = async (req, res) => {
   const { id } = req.params;
   const { title, category, description, github, image } = req.body;
+  console.log(id, req.body);
   if (!mongoose.Types.ObjectId.isValid(id))
     return res.status(404).send(`No post with id: ${id}`);
 
@@ -56,7 +60,7 @@ export const updatedProject = async (req, res) => {
     _id: id,
   };
   await ProjectModel.findByIdAndUpdate(id, updatedProject, { new: true });
-
+  console.log(updatedProject);
   res.json(updatedProject);
 };
 
