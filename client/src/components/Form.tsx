@@ -42,7 +42,7 @@ const Form = ({ details, setDetails, shouldUpdate, id }: FormProps) => {
     e.preventDefault();
     // console.log(details);
     if (shouldUpdate === 1) {
-      let dataTobeUpdated = { id: id, details: details };
+      let dataTobeUpdated = { id: id as String, details: details };
       dispatch(updatePost(dataTobeUpdated));
     } else {
       dispatch(createPost(details));
@@ -78,7 +78,7 @@ const Form = ({ details, setDetails, shouldUpdate, id }: FormProps) => {
         <input
           name="title"
           placeholder="Project title"
-          className="border-b-2 focus:outline-none"
+          className="border-b-2 focus:outline-none focus:shadow-md focus:p-2 transition-all"
           value={details.title}
           onChange={handleChange}
         />

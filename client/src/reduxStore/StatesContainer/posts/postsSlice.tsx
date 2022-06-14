@@ -2,8 +2,15 @@
 
 // Step 1: Import CreateSlice
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-
 import * as api from "../../../api/index";
+
+type Details = {
+  title: string;
+  category: string;
+  description: string;
+  image: string;
+  github: string;
+};
 
 // Step 2: Initialize initialState
 const initialState = {
@@ -12,7 +19,7 @@ const initialState = {
   error: "",
 };
 
-// Step 3: Create the *Async action creator* using CreateAsyncThunk Function and export it.
+// Step 3: Create the *Async action creators* using CreateAsyncThunk Function and export them in order to dispatch them i.e., dispatch(fetchPosts())
 
 // Read in CRUD
 export const fetchPosts = createAsyncThunk("posts/fetchPosts", async () => {
@@ -42,22 +49,24 @@ export const deletePost = createAsyncThunk(
 // Update in CRUD
 export const updatePost = createAsyncThunk(
   "posts/updatePost",
-  async (toBeUpdatedData: { id: String; details: Object }) => {
+  async (toBeUpdatedData: { id: String; details: Details }) => {
     const { id, details } = toBeUpdatedData;
     await api.updatePost(id, details);
   }
 );
 
-// Step 4: Create the Slice (piece of State) and export it
+// Step 4: Create the Slice (piece of State) 
 const postsSlice = createSlice({
   name: "posts",
   initialState,
   reducers: {},
+
+  // extraReducers key is used only when we have to perform some asynchronous actions
   extraReducers: (builder) => {
     builder.addCase(createPost.pending, (state) => {
       state.loading = true;
     });
-    // action is the response returned by getPosts() function
+    // action is the response (axios response) returned by getPosts() function
     builder.addCase(createPost.fulfilled, (state, action) => {
       state.loading = false;
       // action.payload  == response.data
@@ -85,9 +94,9 @@ const postsSlice = createSlice({
   },
 });
 
-// Step 4: Default Export the reducer
+// Step 5: Default Export the reducer
 export default postsSlice.reducer;
 
-// Step 5: pass the reducer (which triggers state mutation) to the configureStore
+// Step 6: pass the reducer (which triggers state mutation) to the configureStore
 
-// Step 6: Export the store and feed to it to the React component tree
+// Step 7: Export the store and feed to it to the React component tree
