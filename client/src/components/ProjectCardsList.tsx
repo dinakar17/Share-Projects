@@ -30,6 +30,7 @@ type ProjectCardsListProps = {
 const ProjectCardsList = ({ details, setDetails }: ProjectCardsListProps) => {
   // state.posts here name 'posts' comes from the name of the reducer given in the configure Store
   const posts = useSelector((state: RootState) => state.posts.posts);
+  console.log(posts);
   const dispatch = useDispatch<AppDispatch>();
   const navigate=  useNavigate();
 
@@ -119,7 +120,7 @@ const ProjectCardsList = ({ details, setDetails }: ProjectCardsListProps) => {
             className="flex flex-col shadow-md rounded-md  h-96 w-80"
             key={post._id}
           >
-            <div className="h-[40%]">
+            <div className="h-[40%] cursor-pointer" onClick={() => navigate(`/projects/${post._id}`)}>
               <img
                 src={post.image}
                 alt=""
