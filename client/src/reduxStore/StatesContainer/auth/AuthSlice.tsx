@@ -31,7 +31,7 @@ export const signIn = createAsyncThunk(
   async ({ signInDetails, navigate }: SignIn) => {
     const response = await api.signIn(signInDetails);
     // console.log(response);
-    navigate("/");
+    navigate("/projects");
     return response.data;
   }
 );
@@ -46,7 +46,7 @@ export const signUp = createAsyncThunk(
     // AxiosResponse(if successful) - "response: {data: {result: ..., token: ...}, status: 201}" (Ref: server/controllers/user.js)
     // AxiosResponse (if unsuccessful) - "response: {response: {data: {message: "User already exists"}}, status: 400}}"
     // AxiosError - No server connection i.e., server is not running (This error is handled by signUp.rejected in the reducer)
-    navigate("/");
+    navigate("/projects");
     return response.data;
   }
 );
@@ -96,7 +96,7 @@ const authSlice = createSlice({
       state.loading = false;
       state.authData = null;
       // Here action.error.message is the *automatic message* generated when the logic in signUp function fails!
-      // Ex: If we use navigate.push("/") then action.error.message = "navigate.push is not a function"
+      // Ex: If we use navigate.push("/projects") then action.error.message = "navigate.push is not a function"
       state.error = action.error.message as string;
       console.log(state.error);
     });

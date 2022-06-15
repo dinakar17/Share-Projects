@@ -4,6 +4,7 @@ import {
   deleteProject,
   getProject,
   getProjects,
+  getProjectsBySearch,
   likeProject,
   updatedProject,
 } from "../controllers/projects.js";
@@ -11,6 +12,7 @@ import {
 const router = express.Router();
 
 router.get("/", getProjects);
+router.get("/search", getProjectsBySearch);
 router.post("/", createProject);
 router.get("/:id", getProject);
 router.patch("/:id", updatedProject);
