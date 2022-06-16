@@ -6,15 +6,29 @@ import ProjectModel from "../models/projectMessage.js";
 const router = express.Router();
 
 export const getProjects = async (req, res) => {
-  try {
-    const projectMessages = await ProjectModel.find();
-    // response: {data: {[{title: "", category: "", description: "", github: "", image: ""}, ....]}, status: 200}
-    res.status(200).json(projectMessages);
-    // console.log(projectMessages);
-  } catch (error) {
-    // response: {data: {message: error.message}, status: 404}
-    res.status(404).json({ message: error.message });
+  const {page} = req.query;
+ 
+  try{
+    const LIMIT = 8;
+    const startIndex = (Number(page) - 1) * LIMIT;
+
+    const total = await ProjectModel.countDocuments({});
+    const posts = await ProjectModel.find().sort({id: -1}).limit(LIMIT).skip(startIndex);
+    // response: {data: {posts: ["...", "..."], currentPage: Number, numberOfPages: Number}}
+    res.json({posts: posts, currentPage: Number(page), numberOfPages: Math.ceil(total/LIMIT)});
   }
+  catch(error){
+    res.json(404).json({message: error.message});
+  }
+  // try {
+  //   const projectMessages = await ProjectModel.find();
+  //   // response: {data: {[{title: "", category: "", description: "", github: "", image: ""}, ....]}, status: 200}
+  //   res.status(200).json(projectMessages);
+  //   // console.log(projectMessages);
+  // } catch (error) {
+  //   // response: {data: {message: error.message}, status: 404}
+  //   res.status(404).json({ message: error.message });
+  // }
 };
 
 export const getProjectsBySearch = async (req, res) => {

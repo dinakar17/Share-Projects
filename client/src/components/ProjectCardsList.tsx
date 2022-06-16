@@ -15,8 +15,10 @@ import {
 import { AppDispatch, RootState } from "../reduxStore/store";
 import Form from "./Form";
 import { Details } from "../types";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import ChipInput from "material-ui-chip-input";
+import Pagination from "./Pagination/Paginate";
+
 
 // Typescript
 type ProjectCardsListProps = {
@@ -27,12 +29,22 @@ type ProjectCardsListProps = {
   setDetails: Dispatch<SetStateAction<Details>>;
 };
 
+function useQuery(){
+  return new URLSearchParams(useLocation().search);
+}
+
 const ProjectCardsList = ({ details, setDetails }: ProjectCardsListProps) => {
   // state.posts here name 'posts' comes from the name of the reducer given in the configure Store
   const posts = useSelector((state: RootState) => state.posts.posts);
   console.log(posts);
   const dispatch = useDispatch<AppDispatch>();
   const navigate=  useNavigate();
+  // Pagination Step #1:
+  const query = useQuery();
+  // Here, page = "Number"
+  const page = query.get("page") || "1";
+  const searchQuery = query.get("searchQuery");
+  console.log(`Query: ${query} Page: ${typeof page} SearchQuery: ${searchQuery}`);                                                                                                                                                                                                                                                                 
 
   const [open, setOpen] = useState(false);
   const [shouldUpdate, setShouldUpdate] = useState(0);
@@ -41,7 +53,7 @@ const ProjectCardsList = ({ details, setDetails }: ProjectCardsListProps) => {
 
   useEffect(() => {
     //Process: fetchPosts(in PostsSlice) => fetchPosts(in api/index.tsx) => getProjects (server/controllers/posts.js)
-    dispatch(fetchPosts());
+    dispatch(fetchPosts(page));
     // console.log(posts);
   }, []);
 
@@ -165,6 +177,10 @@ const ProjectCardsList = ({ details, setDetails }: ProjectCardsListProps) => {
           </div>
         ))}
       </div>
+      {/* Pagination Step #2: */}
+      {(!searchQuery && !tags.length) && (
+        <Pagination page={page}/>
+      ) }
     </>
   );
 };

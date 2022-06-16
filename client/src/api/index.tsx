@@ -15,7 +15,7 @@ API.interceptors.request.use((req: any) => {
 });
 
 // CRUD operations
-export const fetchPosts = () => API.get("/projects");
+export const fetchPosts = (page: String) => API.get(`/projects?page=${page}`);
 export const fetchPostsBySearch = (searchQuery: SearchQuery) => API.get(`/projects/search?searchQuery=${searchQuery.search || 'none'}&tags=${searchQuery.tags}`);
 // createPost makes a post request to 'http://localhost:3000/projects' (through HTTP "language")
 export const createPost = (newPost: Object) => API.post("/projects", newPost);

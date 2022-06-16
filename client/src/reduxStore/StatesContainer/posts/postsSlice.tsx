@@ -11,15 +11,18 @@ const initialState = {
   loading: false,
   posts: [] as Object[],
   error: "",
+  currentPage: 1,
+  numberOfPages: 1,
 };
 
 // Step 3: Create the *Async action creators* using CreateAsyncThunk Function and export them in order to dispatch them i.e., dispatch(fetchPosts())
 
 // Read in CRUD
-export const fetchPosts = createAsyncThunk("posts/fetchPosts", async () => {
+export const fetchPosts = createAsyncThunk("posts/fetchPosts", async (page: String) => {
   // response: {data: {[{title: "", category: "", description: "", github: "", image: ""}, ....]}, status: 200}
   // or response: {data: {message: error.message}, status: 404}
-  const response = await api.fetchPosts();
+  const response = await api.fetchPosts(page);
+  // response: {data: {posts: ["...", "..."], currentPage: Number, numberOfPages: Number}, status: 200}
   return response.data; // Now refer to extraReducers
 });
 
@@ -98,7 +101,9 @@ const postsSlice = createSlice({
     builder.addCase(fetchPosts.fulfilled, (state, action) => {
       state.loading = false;
       // action.payload == response.data. Optional: try console.log(action.type) => "posts/fetchPosts"
-      state.posts = action.payload;
+      state.posts = action.payload.posts;
+      state.currentPage = action.payload.currentPage;
+      state.numberOfPages = action.payload.numberOfPages;
     });
     builder.addCase(fetchPosts.rejected, (state, action) => {
       state.loading = false;
